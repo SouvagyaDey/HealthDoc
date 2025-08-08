@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthDoc - Find Quality Healthcare</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #2c5282;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #4a5568;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c5282;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        select, button {
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3182ce, #2c5282);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(49, 130, 206, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: #f7fafc;
+            border-color: #cbd5e0;
+        }
+
+        /* Hospital Grid */
+        .hospital-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .hospital-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .hospital-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .hospital-image-container {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .hospital-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .hospital-card:hover .hospital-image {
+            transform: scale(1.05);
+        }
+
+        .no-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a0aec0;
+            font-size: 1rem;
+        }
+
+        .hospital-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(49, 130, 206, 0.9);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .hospital-content {
+            padding: 25px;
+        }
+
+        .hospital-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .hospital-info {
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .info-icon {
+            width: 16px;
+            margin-right: 10px;
+            color: #4a5568;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #4a5568;
+            min-width: 70px;
+        }
+
+        .info-value {
+            color: #2d3748;
+        }
+
+        .services {
+            margin-bottom: 20px;
+        }
+
+        .services-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .service-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .service-tag {
+            background: #e6fffa;
+            color: #234e52;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .hospital-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-details {
+            background: #3182ce;
+            color: white;
+        }
+
+        .btn-details:hover {
+            background: #2c5282;
+        }
+
+        .btn-maps {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-maps:hover {
+            background: #38a169;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-results i {
+            font-size: 4rem;
+            color: #cbd5e0;
+            margin-bottom: 20px;
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .no-results p {
+            color: #718096;
+        }
+
+        .hospital-image:hover {
+            transform: scale(1.05);
+        }
+
+        .no-image {
+            height: 100%;
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #a0aec0;
+            font-size: 14px;
+        }
+
+        .no-image i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #cbd5e0;
+        }
+
+        .hospital-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .hospital-content {
+            padding: 25px;
+        }
+
+        .hospital-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .hospital-info {
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .info-icon {
+            color: #3182ce;
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #4a5568;
+            margin-right: 8px;
+        }
+
+        .info-value {
+            color: #2d3748;
+        }
+
+        .services {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .services-title {
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .services-title i {
+            color: #48bb78;
+        }
+
+        .service-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .service-tag {
+            background: linear-gradient(135deg, #ebf8ff, #e6fffa);
+            color: #2c5282;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid #bee3f8;
+        }
+
+        .service-tag i {
+            font-size: 0.75rem;
+        }
+
+        .hospital-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-align: center;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-details {
+            background: linear-gradient(135deg, #3182ce, #2c5282);
+            color: white;
+        }
+
+        .btn-details:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(49, 130, 206, 0.4);
+        }
+
+        .btn-maps {
+            background: white;
+            color: #48bb78;
+            border: 2px solid #48bb78;
+        }
+
+        .btn-maps:hover {
+            background: #48bb78;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .no-results i {
+            font-size: 4rem;
+            color: #cbd5e0;
+            margin-bottom: 20px;
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .no-results p {
+            font-size: 1rem;
+            color: #718096;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .stats {
+                gap: 20px;
+            }
+
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+
+            .hospital-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hospital-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 20px;
+            }
+
+            .filter-section {
+                padding: 20px;
+            }
+
+            .hospital-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1><i class="fas fa-hospital-alt"></i> HealthDoc</h1>
+            <p class="subtitle">Find Quality Healthcare Providers Near You</p>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">{{ hospitals.count }}</div>
+                    <div class="stat-label">Hospitals Available</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ states_count|default:"28" }}</div>
+                    <div class="stat-label">States Covered</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Emergency Care</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-title">
+                <i class="fas fa-filter"></i>
+                Find the Right Hospital for You
+            </div>
+            <form method="get" class="filter-form">
+                <div class="form-group">
+                    <label for="state"><i class="fas fa-map-marker-alt"></i> State</label>
+                    <select name="state" id="state">
+                        <option value="">All States</option>
+                        {% for s in all_states %}
+                            <option value="{{ s }}" {% if s == selected_state %}selected{% endif %}>
+                                {{ s }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="category"><i class="fas fa-stethoscope"></i> Specialty</label>
+                    <select name="category" id="category">
+                        <option value="">All Specialties</option>
+                        {% for category in all_categories %}
+                            <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>
+                                {{ category }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="district"><i class="fas fa-city"></i> District</label>
+                    <select name="district" id="district">
+                        <option value="">All Districts</option>
+                        {% for d in all_districts %}
+                            <option value="{{ d }}" {% if d == selected_district %}selected{% endif %}>
+                                {{ d }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-search"></i>
+                        Search Hospitals
+                    </button>
+                </div>
+                <div class="form-group">
+                    <a href="{% url 'hospital_list' %}" class="btn-secondary">
+                        <i class="fas fa-refresh"></i>
+                        Clear Filters
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Hospital Grid -->
+        {% if hospitals %}
+            <div class="hospital-grid">
+                {% for hospital in hospitals %}
+                    <div class="hospital-card">
+                        <div class="hospital-image-container">
+                            {% if hospital.image %}
+                                <img src="{{ hospital.image.url }}" alt="{{ hospital.name }}" class="hospital-image">
+                            {% else %}
+                                <div class="no-image">
+                                    <i class="fas fa-hospital-alt"></i>
+                                    <span>No Image Available</span>
+                                </div>
+                            {% endif %}
+                            <div class="hospital-badge">{{ hospital.category }}</div>
+                        </div>
+                        
+                        <div class="hospital-content">
+                            <h3 class="hospital-name">{{ hospital.name }}</h3>
+                            
+                            <div class="hospital-info">
+                                <div class="info-item">
+                                    <i class="fas fa-map-marker-alt info-icon"></i>
+                                    <span class="info-label">Location:</span>
+                                    <span class="info-value">{{ hospital.district }}, {{ hospital.state }}</span>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <i class="fas fa-bed info-icon"></i>
+                                    <span class="info-label">Beds:</span>
+                                    <span class="info-value">{{ hospital.bed_count|default:"N/A" }} beds</span>
+                                </div>
+                                
+                                {% if hospital.established_year %}
+                                <div class="info-item">
+                                    <i class="fas fa-calendar-alt info-icon"></i>
+                                    <span class="info-label">Since:</span>
+                                    <span class="info-value">{{ hospital.established_year }}</span>
+                                </div>
+                                {% endif %}
+                                
+                                {% if hospital.accreditation %}
+                                <div class="info-item">
+                                    <i class="fas fa-award info-icon"></i>
+                                    <span class="info-label">Certified:</span>
+                                    <span class="info-value">{{ hospital.accreditation }}</span>
+                                </div>
+                                {% endif %}
+                                
+                                {% if hospital.phone %}
+                                <div class="info-item">
+                                    <i class="fas fa-phone info-icon"></i>
+                                    <span class="info-label">Phone:</span>
+                                    <span class="info-value">
+                                        <a href="tel:{{ hospital.phone }}" style="color: #3182ce; text-decoration: none;">
+                                            {{ hospital.phone }}
+                                        </a>
+                                    </span>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="services">
+                                <div class="services-title">
+                                    <i class="fas fa-check-circle"></i> Available Services
+                                </div>
+                                <div class="service-tags">
+                                    {% if hospital.emergency_services %}
+                                        <span class="service-tag">
+                                            <i class="fas fa-ambulance"></i> Emergency
+                                        </span>
+                                    {% endif %}
+                                    {% if hospital.ambulance_service %}
+                                        <span class="service-tag">
+                                            <i class="fas fa-truck-medical"></i> Ambulance
+                                        </span>
+                                    {% endif %}
+                                    {% if hospital.blood_bank %}
+                                        <span class="service-tag">
+                                            <i class="fas fa-tint"></i> Blood Bank
+                                        </span>
+                                    {% endif %}
+                                    {% if hospital.pharmacy %}
+                                        <span class="service-tag">
+                                            <i class="fas fa-pills"></i> Pharmacy
+                                        </span>
+                                    {% endif %}
+                                    {% if hospital.cafeteria %}
+                                        <span class="service-tag">
+                                            <i class="fas fa-utensils"></i> Cafeteria
+                                        </span>
+                                    {% endif %}
+                                    {% if hospital.parking_available %}
+                                        <span class="service-tag">
+                                            <i class="fas fa-parking"></i> Parking
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="hospital-actions">
+                                <a href="{% url 'hospital_details' hospital.id %}" class="btn-action btn-details">
+                                    <i class="fas fa-info-circle"></i> View Details
+                                </a>
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ hospital.name|urlencode }}+{{ hospital.address|urlencode }}" 
+                                   target="_blank" class="btn-action btn-maps">
+                                    <i class="fas fa-directions"></i> Get Directions
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <h3>No Hospitals Found</h3>
+                <p>Try adjusting your search filters to find more hospitals in your area.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Add some interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-submit form when filter changes
+            const selects = document.querySelectorAll('select');
+            selects.forEach(select => {
+                select.addEventListener('change', function() {
+                    // Optional: Auto-submit form on change
+                    // this.form.submit();
+                });
+            });
+
+            // Add loading animation for buttons
+            const buttons = document.querySelectorAll('.btn-primary');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
+                });
+            });
+
+            // Add smooth scrolling for better UX
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
